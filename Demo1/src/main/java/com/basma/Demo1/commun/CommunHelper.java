@@ -14,6 +14,12 @@ public class CommunHelper {
         return true;
     }
 
+//    public static boolean isExisting(Object object){
+//        if(object!=null)
+//            return true;
+//        return false;
+//    }
+
     public static boolean CheckIfExistsList(List<?> objList) {
         if (objList.size() > 0) return true;
         return false;

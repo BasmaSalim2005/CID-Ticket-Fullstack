@@ -1,12 +1,15 @@
-package org.dxc.khouna.configuration.security;
+package com.basma.Demo1.config.security;
 
 
-import org.dxc.khouna.user.User;
+
+import com.basma.Demo1.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,14 +22,11 @@ public class UserInfoUserDetails implements UserDetails {
 
 
     public UserInfoUserDetails(User userInfo) {
-        email = userInfo.getEmail();
-        password = userInfo.getPassword();
+        this.email = userInfo.getEmail();
+        this.password = userInfo.getPassword();
 
-        authorities = userInfo.getProfils()
-                .stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_"+role.getProfilName().name())) // Ne pas ajouter le préfixe "ROLE_"
-                .collect(Collectors.toList());
-
+        this.authorities = new ArrayList<>();
+        this.authorities.add(new SimpleGrantedAuthority("ROLE_" + userInfo.getRole().name()));
     }
     public GrantedAuthority convertToGrantedAuthority(String roleName){
         return new SimpleGrantedAuthority(roleName);

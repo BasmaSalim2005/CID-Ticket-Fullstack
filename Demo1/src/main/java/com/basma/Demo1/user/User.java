@@ -28,6 +28,7 @@ public class User {
     private String email;
     private Role role;
 
+
     @OneToMany
     private List<Ticket> ticket ;
 

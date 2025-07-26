@@ -1,8 +1,9 @@
-package org.dxc.khouna.configuration.security;
+package com.basma.Demo1.config.security;
 
 
-import org.dxc.khouna.user.User;
-import org.dxc.khouna.user.UserRepository;
+
+import com.basma.Demo1.user.User;
+import com.basma.Demo1.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

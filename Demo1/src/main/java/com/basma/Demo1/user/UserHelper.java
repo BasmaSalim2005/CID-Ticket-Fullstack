@@ -1,6 +1,9 @@
 package com.basma.Demo1.user;
 
 import com.basma.Demo1.commun.CommunHelper;
+import com.basma.Demo1.exceptions.CredentialsNotCorrectException;
+import com.basma.Demo1.exceptions.EntityNotFoundException;
+import com.basma.Demo1.user.dtos.UserAuthResponseDTO;
 import com.basma.Demo1.user.dtos.UserResponseDTO;
 import com.basma.Demo1.user.dtos.Userdto;
 import com.basma.Demo1.user.dtos.userupdatedto;
@@ -17,6 +20,16 @@ public class UserHelper {
         }
     }
 
+    public static void displayUserNotFound() throws EntityNotFoundException {
+        String message = "these user is not existing in DB";
+        throw new EntityNotFoundException(message);
+    }
+
+    public static void displayCredentialsIncorrects() throws CredentialsNotCorrectException {
+        String message = "email or password is incorect";
+        throw new CredentialsNotCorrectException(message);
+    }
+
     protected static void displayUserAlreadyExistsException(User newUser) {
         if (newUser != null) {
             String message = "User Already Exists!";
@@ -31,6 +44,18 @@ public class UserHelper {
         formattedUser.setLastname(updatedUser.getLastname());
         formattedUser.setRole(updatedUser.getRole());
         formattedUser.setEmail(updatedUser.getEmail());
+
+        return formattedUser;
+    }
+
+    protected static UserAuthResponseDTO mapToResponseAuth(User updatedUser, String token){
+        UserAuthResponseDTO formattedUser=new UserAuthResponseDTO();
+        formattedUser.setId(updatedUser.getId());
+        formattedUser.setFirstname(updatedUser.getFirstname());
+        formattedUser.setLastname(updatedUser.getLastname());
+        formattedUser.setRole(updatedUser.getRole());
+        formattedUser.setEmail(updatedUser.getEmail());
+        formattedUser.setToken(token);
 
         return formattedUser;
     }

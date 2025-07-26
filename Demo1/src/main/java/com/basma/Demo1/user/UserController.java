@@ -1,10 +1,12 @@
 package com.basma.Demo1.user;
 
-import com.basma.Demo1.user.dtos.UserResponseDTO;
-import com.basma.Demo1.user.dtos.Userdto;
-import com.basma.Demo1.user.dtos.userupdatedto;
+import com.basma.Demo1.exceptions.CredentialsNotCorrectException;
+import com.basma.Demo1.exceptions.EntityNotFoundException;
+import com.basma.Demo1.user.dtos.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,15 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<UserAuthResponseDTO> authenticate(@RequestBody @Valid UserAuthenticationDTO authenticationRequest) throws CredentialsNotCorrectException, EntityNotFoundException, CredentialsNotCorrectException {
+        UserAuthResponseDTO authenticationResponse = userService.authenticate(authenticationRequest);
+
+        ResponseEntity<UserAuthResponseDTO> apiResponse = new ResponseEntity<>(authenticationResponse, HttpStatus.OK);
+        return apiResponse;
+
+    }
 
     @PostMapping("/add")
     public UserResponseDTO AddUser(@RequestBody @Valid Userdto dto){

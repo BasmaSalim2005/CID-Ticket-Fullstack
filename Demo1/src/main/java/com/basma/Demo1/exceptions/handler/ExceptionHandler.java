@@ -1,16 +1,7 @@
 package com.basma.Demo1.exceptions.handler;
 
 
-import com.basma.Demo1.exceptions.TicketAlreadyExistsExeception;
-import com.basma.Demo1.exceptions.TicketNotFoundException;
-import com.basma.Demo1.exceptions.UserAlreadyExistsExeception;
-import com.basma.Demo1.exceptions.UserNotFoundException;
-import com.basma.Demo1.exceptions.FeatureAlreadyExistsException;
-import com.basma.Demo1.exceptions.FeatureNotFoundException;
-import com.basma.Demo1.exceptions.FeedbackAlreadyExistsException;
-import com.basma.Demo1.exceptions.FeedbackNotFoundException;
-import com.basma.Demo1.exceptions.ApplicationAlreadyExistsException;
-import com.basma.Demo1.exceptions.ApplicationNotFoundException;
+import com.basma.Demo1.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -92,6 +83,22 @@ public class ExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @org.springframework.web.bind.annotation.ExceptionHandler(ApplicationAlreadyExistsException.class)
     public Map<String, String> ApplicationAlreadyExistsException(ApplicationAlreadyExistsException ex) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put(ERROR_MESSAGE, ex.getMessage());
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @org.springframework.web.bind.annotation.ExceptionHandler(EntityNotFoundException.class)
+    public Map<String, String> handleEntityNotFoundException(EntityNotFoundException ex) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put(ERROR_MESSAGE, ex.getMessage());
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @org.springframework.web.bind.annotation.ExceptionHandler(CredentialsNotCorrectException.class)
+    public Map<String, String> handleInvalidArgument(CredentialsNotCorrectException ex) {
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put(ERROR_MESSAGE, ex.getMessage());
         return errorMap;

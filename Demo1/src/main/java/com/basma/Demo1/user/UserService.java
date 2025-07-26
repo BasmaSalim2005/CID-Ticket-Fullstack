@@ -2,13 +2,17 @@ package com.basma.Demo1.user;
 
 
 import com.basma.Demo1.commun.CommunHelper;
+import com.basma.Demo1.config.security.JwtService;
+import com.basma.Demo1.exceptions.CredentialsNotCorrectException;
+import com.basma.Demo1.exceptions.EntityNotFoundException;
 import com.basma.Demo1.notifications.smtp.EmailService;
-import com.basma.Demo1.user.dtos.UserResponseDTO;
-import com.basma.Demo1.user.dtos.Userdto;
-import com.basma.Demo1.user.dtos.userupdatedto;
+import com.basma.Demo1.user.dtos.*;
 import com.basma.Demo1.user.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 
@@ -16,13 +20,39 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.basma.Demo1.user.UserHelper.mapToResponseAuth;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final EmailService emailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
+    public User getUserIfExists(String email) throws EntityNotFoundException {
+        User existingUser = userRepository.findByEmail(email);
+        if (!CommunHelper.CheckIfExists(existingUser))
+            UserHelper.displayUserNotFound();
+
+        return existingUser;
+    }
+
+    public UserAuthResponseDTO authenticate(UserAuthenticationDTO authenticationRequest) throws CredentialsNotCorrectException, EntityNotFoundException {
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword());
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+        if (!authentication.isAuthenticated())
+            UserHelper.displayCredentialsIncorrects();
+
+        User existingUser = getUserIfExists(authenticationRequest.getEmail());
+        String token = jwtService.generateToken(authenticationRequest.getEmail());
+
+        UserAuthResponseDTO formattedResponse = mapToResponseAuth(existingUser, token);
+        return formattedResponse;
+    }
     protected UserResponseDTO AddUser(Userdto dto){
         CheckIfUserAlreadyExists(dto.getEmail());
         User newUser= UserHelper.mapToEntity(dto);
